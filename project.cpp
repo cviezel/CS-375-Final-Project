@@ -28,37 +28,26 @@ struct node
 };
 int maxProfit = 0;
 int maxCapacity = 0;
-void recursiveAlgorithmHelper(vector<node> list, vector<node> currentList, int index)
+vector<node> completeList;
+void recursiveAlgorithmHelper(int currentWeight, int currentProfit, int index)
 {
-  int currentWeight = 0;
-  int currentProfit = 0;
-  if(index == list.size() + 1)
+  if(index == completeList.size() + 1 || currentWeight > maxCapacity)
   {
     return;
   }
-  for(int i = 0; i < currentList.size(); i++)
-  {
-    //cout << currentList[i].weight << " " << currentList[i].price << endl;
-    currentWeight += currentList[i].weight;
-    currentProfit += currentList[i].price;
-  }
-  //cout << "\n";
-  //cout << "currentWeight is " << currentWeight << " and currentProfit is " << currentProfit << endl;
   if(currentWeight <= maxCapacity && currentProfit > maxProfit)
   {
     maxProfit = currentProfit;
   }
-  currentList.push_back(list[index]);
-  recursiveAlgorithmHelper(list, currentList, index + 1);
-  currentList.pop_back();
-  recursiveAlgorithmHelper(list, currentList, index + 1);
+  recursiveAlgorithmHelper(currentWeight + completeList[index].weight, currentProfit + completeList[index].price, index + 1);
+  recursiveAlgorithmHelper(currentWeight, currentProfit, index + 1);
 }
 void recursiveAlgorithm(int capacity, vector<node> list)
 {
   clock_t begin = clock();
   maxCapacity = capacity;
-  vector<node> currentList;
-  recursiveAlgorithmHelper(list, currentList, 0);
+  completeList = list;
+  recursiveAlgorithmHelper(0, 0, 0);
   clock_t end = clock();
   cout << list.size() << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC << endl;
 }
@@ -68,9 +57,6 @@ int main(int argc, char** argv)
 {
   ifstream input_file;
   input_file.open(argv[1]);
-  output_file.open(argv[2]);
-
-  int alg = atoi(argv[3]);
 
   int itemCount = 0;
   int capacity = 0;
@@ -91,10 +77,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
-    if(alg == 4)
-    {
-      recursiveAlgorithm(capacity, list);
-    }
+    recursiveAlgorithm(capacity, list);
     list.clear();
   }
 }
