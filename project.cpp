@@ -61,12 +61,14 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
   }
   //sort(list.begin(), list.end());
   clock_t begin = clock();
+  long count = 0;
   for(int i = 1; i < item; i++)
   {
     int wi = list[i-1].weight;
     int pi = list[i-1].price;
     for(int j = 1; j < c; j++)
     {
+      count++;
       if(wi <= j && arr[i-1][j-wi] + pi > arr[i-1][j])
       {
         arr[i][j] = arr[i-1][j-wi] + pi;
@@ -77,6 +79,7 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
       }
     }
   }
+  cout << count << endl;
   /*
   for(int i = 0; i < item; i++)
   {
@@ -92,10 +95,13 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
   //cout << arr[1][capacity] << endl;
 }
 vector<node> memo_list;
+long memocount = 0;
 int memoizedHelper(int i, int w)
 {
   if(i > 0)
   {
+    memocount++;
+    //cout << i << " " << w << endl;
     if(arr[i][w] != -1)
     {
       return arr[i][w];
@@ -122,22 +128,12 @@ void memoizedAlgorithm(int capacity, vector<node> list)
       arr[i][j] = -1;
     }
   }
-  /*
-  for(int i = 0; i < item; i++)
-  {
-    for(int j = 0; j < c; j++)
-    {
-      cout << arr[i][j] << " ";
-    }
-    cout << "\n";
-  }
-  */
-
-  //sort(list.begin(), list.end());
   memo_list = list;
 
   clock_t begin = clock();
   memoizedHelper(list.size(), capacity);
+  cout << memocount << endl;
+  clock_t end = clock();
   int i = item - 1;
   int w = c - 1;
   /*
@@ -149,13 +145,10 @@ void memoizedAlgorithm(int capacity, vector<node> list)
     }
     cout << "\n";
   }
-  */
-  clock_t end = clock();
+*/
   cout << "Memoization: " << list.size() << " " << arr[item-1][c-1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
   //cout << arr[1][capacity] << endl;
 }
-
-
 //reads the information from the input file into a vector of nodes
 int main(int argc, char** argv)
 {
