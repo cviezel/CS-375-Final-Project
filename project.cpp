@@ -44,7 +44,7 @@ void recursiveAlgorithm(int capacity, vector<node> list)
   completeList = list;
   recursiveAlgorithmHelper(0, 0, 0);
   clock_t end = clock();
-  cout << list.size() << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC << endl;
+  cout << "Divide & Conquer: " << list.size() << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
 {
@@ -177,6 +177,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
+    recursiveAlgorithm(capacity, list);
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
