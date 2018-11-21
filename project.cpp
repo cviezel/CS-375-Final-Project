@@ -46,12 +46,12 @@ void recursiveAlgorithm(int capacity, vector<node> list)
   clock_t end = clock();
   cout << "Divide & Conquer: " << list.size() << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
+vector<vector<int> > arr;
 void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
 {
-  clock_t begin = clock();
   int c = capacity + 1;
   int item = list.size() + 1;
-  int arr[item][c];
+  arr.resize(item, vector<int>(c));
   for(int i = 0; i < item; i++)
   {
     for(int j = 0; j < c; j++)
@@ -60,6 +60,7 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
     }
   }
   //sort(list.begin(), list.end());
+  clock_t begin = clock();
   for(int i = 1; i < item; i++)
   {
     int wi = list[i-1].weight;
@@ -91,15 +92,14 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
   //cout << arr[1][capacity] << endl;
 }
 vector<node> memo_list;
-vector<vector<int> > arr;
 int memoizedHelper(int i, int w)
 {
-  if(i < 1)
+  if(i > 0)
   {
-    return 0;
-  }
-  if(arr[i][w] < 0)
-  {
+    if(arr[i][w] != -1)
+    {
+      return arr[i][w];
+    }
     if(w < memo_list[i-1].weight)
     {
       arr[i][w] = memoizedHelper(i-1, w);
@@ -109,11 +109,9 @@ int memoizedHelper(int i, int w)
       arr[i][w] = max(memoizedHelper(i-1, w), memo_list[i-1].price + memoizedHelper(i-1, w-memo_list[i-1].weight));
     }
   }
-  return arr[i][w];
 }
 void memoizedAlgorithm(int capacity, vector<node> list)
 {
-  clock_t begin = clock();
   int c = capacity + 1;
   int item = list.size() + 1;
   arr.resize(item, vector<int>(c));
@@ -138,7 +136,10 @@ void memoizedAlgorithm(int capacity, vector<node> list)
   //sort(list.begin(), list.end());
   memo_list = list;
 
+  clock_t begin = clock();
   memoizedHelper(list.size(), capacity);
+  int i = item - 1;
+  int w = c - 1;
   /*
   for(int i = 0; i < item; i++)
   {
@@ -177,7 +178,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
-    recursiveAlgorithm(capacity, list);
+    //recursiveAlgorithm(capacity, list);
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
