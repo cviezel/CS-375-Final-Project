@@ -15,6 +15,14 @@ struct node
 {
   int weight;
   int price;
+  bool operator<(node a)
+  {
+      if(this->weight < a.weight)
+      {
+        return true;
+      }
+      return false;
+  }
 };
 int maxProfit = 0;
 int maxCapacity = 0;
@@ -49,6 +57,7 @@ void recursiveAlgorithm(int capacity, vector<node> list)
 vector<vector<int> > arr;
 void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
 {
+  clock_t begin = clock();
   int c = capacity + 1;
   int item = list.size() + 1;
   arr.resize(item, vector<int>(c));
@@ -60,7 +69,7 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
     }
   }
   //sort(list.begin(), list.end());
-  clock_t begin = clock();
+
   long count = 0;
   for(int i = 1; i < item; i++)
   {
@@ -96,14 +105,17 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
 }
 vector<node> memo_list;
 long memocount = 0;
+long repeatCount = 0;
 int memoizedHelper(int i, int w)
 {
   if(i > 0)
   {
-    memocount++;
     //cout << i << " " << w << endl;
+    memocount++;
     if(arr[i][w] != -1)
     {
+      //cout << i << " " << w << endl;
+      //repeatCount++;
       return arr[i][w];
     }
     if(w < memo_list[i-1].weight)
@@ -118,6 +130,7 @@ int memoizedHelper(int i, int w)
 }
 void memoizedAlgorithm(int capacity, vector<node> list)
 {
+  clock_t begin = clock();
   int c = capacity + 1;
   int item = list.size() + 1;
   arr.resize(item, vector<int>(c));
@@ -130,9 +143,11 @@ void memoizedAlgorithm(int capacity, vector<node> list)
   }
   memo_list = list;
 
-  clock_t begin = clock();
+  //sort(list.begin(), list.end());
+
   memoizedHelper(list.size(), capacity);
   cout << memocount << endl;
+  //cout << repeatCount << endl;
   clock_t end = clock();
   int i = item - 1;
   int w = c - 1;
@@ -149,12 +164,26 @@ void memoizedAlgorithm(int capacity, vector<node> list)
   cout << "Memoization: " << list.size() << " " << arr[item-1][c-1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
   //cout << arr[1][capacity] << endl;
 }
+void generateRandomFile(long items, long capacity)
+{
+  output_file << items << " " << capacity << endl;
+  int w, p;
+  for(int i = 0; i < items; i++)
+  {
+    w = rand() % 10 + 1;
+    p = rand() % 100 + 1;
+    output_file << w << " " << p << endl;
+  }
+}
 //reads the information from the input file into a vector of nodes
 int main(int argc, char** argv)
 {
   ifstream input_file;
   input_file.open(argv[1]);
+  output_file.open(argv[2]);
   vector<node> list;
+
+  //generateRandomFile(10000, 1000);
 
   while(input_file)
   {
@@ -172,6 +201,7 @@ int main(int argc, char** argv)
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
     //recursiveAlgorithm(capacity, list);
+
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
