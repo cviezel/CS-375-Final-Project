@@ -175,6 +175,42 @@ void generateRandomFile(long items, long capacity)
     output_file << w << " " << p << endl;
   }
 }
+//Aidan Memoization Code
+int lookUpFib(int n, int A[]) {
+    if(A[n] == -1) {
+        if(n <= 1) {
+            A[n] = n;
+        }
+        else {
+            A[n] = lookUpFib(n - 1, A) + lookUpFib(n - 2, A);
+        }
+    }
+    return A[n];
+}
+void Fibonacci(int n) {
+    clock_t begin = clock();
+    int A[n + 1];
+    for(int i = 0; i <= n; i++) {
+        A[i] = -1;
+    }
+    int a = lookUpFib(n, A);
+    clock_t end = clock();
+    cout << "Memoization: " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+}
+
+//Jasper Dynamic Code
+void fib(int n){
+  clock_t begin = clock();
+	int f[n+2];
+	f[0] = 0;
+	f[1] = 1;
+	for(int i = 2; i <= n; i++){
+		f[i] = f[i-1] + f[i-2];
+	}
+  clock_t end = clock();
+  cout << "Dynamic Programming: " << f[n] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+}
+
 //reads the information from the input file into a vector of nodes
 int main(int argc, char** argv)
 {
@@ -206,4 +242,9 @@ int main(int argc, char** argv)
     memoizedAlgorithm(capacity, list);
     list.clear();
   }
+  fib(9);
+  fib(500);
+
+  Fibonacci(9);
+  Fibonacci(500);
 }
