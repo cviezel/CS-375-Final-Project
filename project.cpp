@@ -9,6 +9,7 @@
 using namespace std;
 
 ofstream output_file;
+ofstream fib_output_file;
 
 //structure used to store price, weight, and ratio for each value in the problem
 struct node
@@ -61,13 +62,14 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
   int c = capacity + 1;
   int item = list.size() + 1;
   arr.resize(item, vector<int>(c));
-  for(int i = 0; i < item; i++)
+  /*for(int i = 0; i < item; i++)
   {
     for(int j = 0; j < c; j++)
     {
       arr[i][j] = 0;
     }
   }
+  */
   //sort(list.begin(), list.end());
 
   long count = 0;
@@ -78,7 +80,11 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
     for(int j = 1; j < c; j++)
     {
       count++;
-      if(wi <= j && arr[i-1][j-wi] + pi > arr[i-1][j])
+      if(i == 0 || j == 0)
+      {
+        arr[i][j] = 0;
+      }
+      else if(wi <= j && arr[i-1][j-wi] + pi > arr[i-1][j])
       {
         arr[i][j] = arr[i-1][j-wi] + pi;
       }
@@ -88,7 +94,6 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
       }
     }
   }
-  cout << count << endl;
   /*
   for(int i = 0; i < item; i++)
   {
@@ -100,7 +105,7 @@ void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
   }
   */
   clock_t end = clock();
-  cout << "Dynamic Programming: " << list.size() << " " << arr[item - 1][c - 1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  output_file << "Dynamic Programming: " << list.size() << " " << count << " " << arr[item - 1][c - 1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
   //cout << arr[1][capacity] << endl;
 }
 vector<node> memo_list;
@@ -111,13 +116,13 @@ int memoizedHelper(int i, int w)
   if(i > 0)
   {
     //cout << i << " " << w << endl;
-    memocount++;
     if(arr[i][w] != -1)
     {
       //cout << i << " " << w << endl;
       //repeatCount++;
       return arr[i][w];
     }
+    memocount++;
     if(w < memo_list[i-1].weight)
     {
       arr[i][w] = memoizedHelper(i-1, w);
@@ -146,7 +151,7 @@ void memoizedAlgorithm(int capacity, vector<node> list)
   //sort(list.begin(), list.end());
 
   memoizedHelper(list.size(), capacity);
-  cout << memocount << endl;
+  //cout << memocount << endl;
   //cout << repeatCount << endl;
   clock_t end = clock();
   int i = item - 1;
@@ -161,7 +166,7 @@ void memoizedAlgorithm(int capacity, vector<node> list)
     cout << "\n";
   }
 */
-  cout << "Memoization: " << list.size() << " " << arr[item-1][c-1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  output_file << "Memoization: " << list.size() << " " << memocount << " " << arr[item-1][c-1] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
   //cout << arr[1][capacity] << endl;
 }
 void generateRandomFile(long items, long capacity)
@@ -176,7 +181,7 @@ void generateRandomFile(long items, long capacity)
   }
 }
 //Aidan Memoization Code
-int lookUpFib(int n, int A[]) {
+long lookUpFib(int n, long A[]) {
     if(A[n] == -1) {
         if(n <= 1) {
             A[n] = n;
@@ -189,34 +194,38 @@ int lookUpFib(int n, int A[]) {
 }
 void Fibonacci(int n) {
     clock_t begin = clock();
-    int A[n + 1];
+    long A[n + 1];
     for(int i = 0; i <= n; i++) {
         A[i] = -1;
     }
-    int a = lookUpFib(n, A);
+    long a = lookUpFib(n, A);
     clock_t end = clock();
-    cout << "Memoization: " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+    fib_output_file << "Memoization: " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 
 //Jasper Dynamic Code
 void fib(int n){
   clock_t begin = clock();
-	int f[n+2];
+	long f[n+2];
 	f[0] = 0;
 	f[1] = 1;
 	for(int i = 2; i <= n; i++){
 		f[i] = f[i-1] + f[i-2];
 	}
   clock_t end = clock();
-  cout << "Dynamic Programming: " << f[n] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  fib_output_file << "Dynamic Programming: " << f[n] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 
 //reads the information from the input file into a vector of nodes
 int main(int argc, char** argv)
 {
   ifstream input_file;
+  ifstream fib_input_file;
+
   input_file.open(argv[1]);
   output_file.open(argv[2]);
+  fib_input_file.open(argv[3]);
+  fib_output_file.open(argv[4]);
   vector<node> list;
 
   //generateRandomFile(10000, 1000);
@@ -242,9 +251,13 @@ int main(int argc, char** argv)
     memoizedAlgorithm(capacity, list);
     list.clear();
   }
-  fib(9);
-  fib(500);
-
-  Fibonacci(9);
-  Fibonacci(500);
+  int a = 0;
+  while(fib_input_file)
+  {
+    fib_input_file >> a;
+    if(fib_input_file.eof())
+      break;
+    fib(a);
+    Fibonacci(a);
+  }
 }
