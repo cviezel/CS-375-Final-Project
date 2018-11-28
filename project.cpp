@@ -32,13 +32,14 @@ vector<node> completeList;
 int itemCount = 0;
 int capacity = 0;
 
-
+int recursiveCount = 0;
 void recursiveAlgorithmHelper(int currentWeight, int currentProfit, int index)
 {
-  if(index == completeList.size() + 1 || currentWeight > maxCapacity)
+  if(index == completeList.size() + 1)
   {
     return;
   }
+  recursiveCount++;
   if(currentWeight <= maxCapacity && currentProfit > maxProfit)
   {
     maxProfit = currentProfit;
@@ -53,7 +54,7 @@ void recursiveAlgorithm(int capacity, vector<node> list)
   completeList = list;
   recursiveAlgorithmHelper(0, 0, 0);
   clock_t end = clock();
-  cout << "Divide & Conquer: " << list.size() << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  output_file << "Divide & Conquer: " << list.size() << " " << recursiveCount << " " << maxProfit << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 vector<vector<int> > arr;
 void dynamicProgrammingAlgorithm(int capacity, vector<node> list)
@@ -200,7 +201,7 @@ void Fibonacci(int n) {
     }
     long a = lookUpFib(n, A);
     clock_t end = clock();
-    fib_output_file << "Memoization: " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+    fib_output_file << "Memoization: " << n << " " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 
 //Jasper Dynamic Code
@@ -213,7 +214,23 @@ void fib(int n){
 		f[i] = f[i-1] + f[i-2];
 	}
   clock_t end = clock();
-  fib_output_file << "Dynamic Programming: " << f[n] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+  fib_output_file << "Dynamic Programming: " << n << " " << f[n] << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
+}
+
+int fibHelper(int n)
+{
+  if(n <= 1)
+  {
+    return n;
+  }
+  return fibHelper(n-2) + fibHelper(n-1);
+}
+void recursiveFib(int n)
+{
+  clock_t begin = clock();
+  int a = fibHelper(n);
+  clock_t end = clock();
+  fib_output_file << "Divide & Conquer: " << n << " " << a << " " << double(end - begin) / CLOCKS_PER_SEC * 1000 << endl;
 }
 
 //reads the information from the input file into a vector of nodes
@@ -245,8 +262,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
-    //recursiveAlgorithm(capacity, list);
-
+    recursiveAlgorithm(capacity, list);
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
@@ -257,6 +273,7 @@ int main(int argc, char** argv)
     fib_input_file >> a;
     if(fib_input_file.eof())
       break;
+    recursiveFib(a);
     fib(a);
     Fibonacci(a);
   }
