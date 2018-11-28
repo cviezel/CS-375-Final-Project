@@ -1,0 +1,9 @@
+Divide & Conquer: 6 8 0
+Dynamic Programming: 6 8 0
+Memoization: 6 8 0
+Divide & Conquer: 10 55 0
+Dynamic Programming: 10 55 0
+Memoization: 10 55 0
+Divide & Conquer: 20 6765 0
+Dynamic Programming: 20 6765 0
+Memoization: 20 6765 0
