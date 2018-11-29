@@ -114,8 +114,10 @@ long memocount = 0;
 long repeatCount = 0;
 int memoizedHelper(int i, int w)
 {
-  if(i > 0)
+  if(i <= 0)
   {
+     return 0;
+  }
     //cout << i << " " << w << endl;
     if(arr[i][w] != -1)
     {
@@ -132,7 +134,7 @@ int memoizedHelper(int i, int w)
     {
       arr[i][w] = max(memoizedHelper(i-1, w), memo_list[i-1].price + memoizedHelper(i-1, w-memo_list[i-1].weight));
     }
-  }
+    return arr[i][w];
 }
 void memoizedAlgorithm(int capacity, vector<node> list)
 {
@@ -262,7 +264,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
-    recursiveAlgorithm(capacity, list);
+    //recursiveAlgorithm(capacity, list);
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
