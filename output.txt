@@ -1,2 +1,0 @@
-Dynamic Programming: 3 3000000 5000 75.99
-Memoization: 3 6 5000 30.969

@@ -264,7 +264,7 @@ int main(int argc, char** argv)
       list.push_back(temp);
     }
     //depending on the value specified in the command line, calls the proper algorithm on the data
-    //recursiveAlgorithm(capacity, list);
+    recursiveAlgorithm(capacity, list);
     dynamicProgrammingAlgorithm(capacity, list);
     memoizedAlgorithm(capacity, list);
     list.clear();
